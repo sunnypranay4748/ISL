@@ -1,0 +1,91 @@
+# Use the read.csv() function to read the data into R. Call the loaded data college. Make sure that you have the directory set to the correct location for the data.
+
+school = read.csv("C:\\Users\\rajen\\Documents\\ISL\\College.csv", header = TRUE)
+
+# Look at the data using the fix() function. You should notice that the first column is just the name of each university. We don't really want R to treat this as data. However, it may be handy to have these names for later. Try the following commands:
+rownames(school)=school[,1]
+fix(school)
+head(school)
+
+rownames(school) = school[, 1]
+head(school)
+
+school= school[, -1]
+head(school)
+
+# Use the summary() function to produce a numerical summary of the variables in the data set.
+summary(school)
+
+# Use the pairs() function to produce a scatterplot matrix of the first ten columns or variables of the data. Recall that you can reference the first ten columns of a matrix A using A[, 1:10].
+
+pairs(school[, 1:10])
+
+# Use the plot() function to produce side-by-side boxplots of Outstate versus Private.
+
+plot(school$Private, school$Outstate, xlab = "Private", ylab = "Out-of-state tuition (dollars)")
+
+# Create a new qualitative variable, called Elite, by binning the Top10perc variable. We are going to divide universities into two groups based on whether or not the proportion of students coming from the top 10% of their high school classes exceeds 50%.
+
+Elite = rep("No", nrow(college))
+Elite[school$Top10per > 50] = "Yes"
+Elite = as.factor(Elite)
+college = data.frame(college, Elite)
+
+summary(school$Elite)
+
+plot(school$Elite, college$Outstate, xlab = "Elite", ylab = "Out-of-state tuition (dollars)")
+
+# Use the hist() function to produce some histograms with differing numbers of bins for a few of the quantitative variables. You may find the command par(mfrow = c(2, 2)) useful: it will divide the print window into four regions so that four plots can be made simultaneously. Modifying the arguments to this function will divide the screen in other ways.
+
+par(mfrow = c(2, 2))
+hist(school$Apps, xlab = "Number of applicants", main = "Histogram for all colleges")
+hist(school$Apps[school$Private == "Yes"], xlab = "Number of applicants", main = "Histogram for private schools")
+hist(school$Apps[school$Private == "No"], xlab = "Number of applicants", main = "Histogram for public schools")
+hist(school$Apps[school$Elite == "Yes"], xlab = "Number of applicants", main = "Histogram for elite schools")
+
+par(mfrow = c(2, 2))
+hist(school$Expend, xlab = "Instructional expenditure per student (dollars)", main = "Histogram for all colleges")
+hist(school$Expend[school$Private == "Yes"], xlab = "Instructional expenditure per student (dollars)", main = "Histogram for private schools")
+hist(school$Expend[school$Private == "No"], xlab = "Instructional expenditure per student (dollars)", main = "Histogram for public schools")
+hist(school$Expend[school$Elite == "Yes"], xlab = "Instructional expenditure per student (dollars)", main = "Histogram for elite schools")
+
+
+par(mfrow = c(2, 2))
+hist(school$S.F.Ratio, xlab = "Student-Faculty Ratio", main = "Histogram for all colleges")
+hist(school$S.F.Ratio[school$Private == "Yes"], xlab = "Student-Faculty Ratio", main = "Histogram for private schools")
+hist(school$S.F.Ratio[school$Private == "No"], xlab = "Student-Faculty Ratio", main = "Histogram for public schools")
+hist(school$S.F.Ratio[school$Elite == "Yes"], xlab = "Student-Faculty Ratio", main = "Histogram for elite schools")
+
+# Continue exploring the data, and provide a brief summary of what you discover.
+
+NonTuitionCosts = school$Room.Board + school$Books + school$Personal
+school = data.frame(school, NonTuitionCosts)
+par(mfrow = c(1, 2))
+plot(school$Private, school$NonTuitionCosts, xlab = "Private", ylab = "Total non-tuition costs per year (dollars)")
+plot(school$Elite, school$NonTuitionCosts, xlab = "Elite", ylab = "Total non-tuition costs per year (dollars)")
+
+AcceptPerc = school$Accept / school$Apps * 100
+school = data.frame(school, AcceptPerc)
+par(mfrow = c(1, 2))
+plot(school$Private, school$AcceptPerc, xlab = "Private", ylab = "Acceptance Rate")
+plot(school$Elite, school$AcceptPerc, xlab = "Elite", ylab = "Acceptance Rate")
+
+summary(school$AcceptPerc[school$Private == "Yes"])
+
+summary(school$AcceptPerc[school$Private == "No"])
+
+summary(school$AcceptPerc[school$Elite == "Yes"])
+
+summary(school$AcceptPerc[school$Elite == "No"])
+
+par(mfrow = c(2, 2))
+hist(school$perc.alumni, xlab = "Percent of alumni who donate", main = "Histogram for all colleges")
+hist(school$perc.alumni[college$Private == "Yes"], xlab = "Percent of alumni who donate", main = "Histogram for private schools")
+hist(school$perc.alumni[college$Private == "No"], xlab = "Percent of alumni who donate", main = "Histogram for public schools")
+hist(school$perc.alumni[college$Elite == "Yes"], xlab = "Percent of alumni who donate", main = "Histogram for elite schools")
+
+par(mfrow = c(2, 2))
+plot(school$PhD, school$Grad.Rate, xlab = "Number of faculty with PhDs", ylab = "Graduation Rate")
+plot(school$Terminal, school$Grad.Rate, xlab = "Number of faculty with terminal degrees", ylab = "Graduation Rate")
+plot(school$S.F.Ratio, school$Grad.Rate, xlab = "Student-faculty ratio", ylab = "Graduation Rate")
+plot(school$Expend, school$Grad.Rate, xlab = "Instructional expenditure per student (dollars)", ylab = "Graduation Rate")
